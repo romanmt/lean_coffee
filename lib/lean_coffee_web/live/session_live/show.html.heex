@@ -12,3 +12,18 @@
   <button type="submit">Join Session</button>
 </form>
 
+<h2>Propose a Topic</h2>
+<form phx-submit="propose_topic">
+  <input type="text" name="topic" placeholder="New Topic" value={@new_topic} phx-change="update_new_topic"/>
+  <button type="submit">Propose Topic</button>
+</form>
+
+<h2>Topics</h2>
+<ul>
+  <%= for {topic, votes} <- @topics do %>
+    <li>
+      <%= topic %> - Votes: <%= votes %>
+        <button phx-click="vote" phx-value-topic={topic}>Vote</button>
+    </li>
+  <% end %>
+</ul>

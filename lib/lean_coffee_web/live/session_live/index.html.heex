@@ -6,7 +6,7 @@
 </form>
 
 <ul>
-  <%= for {id, name, _participants} <- @sessions do %>
+  <%= for {id, name, _participants, _topics} <- @sessions do %>
     <li>
       <%= name %>, <%= id %>
     </li>
