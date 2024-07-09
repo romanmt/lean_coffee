@@ -1,0 +1,12 @@
+<h1>Sessions</h1>
+
+<form phx-submit="create_session">
+  <input type="text" name="name" placeholder="Session Name" required>
+  <button type="submit">Create Session</button>
+</form>
+
+<ul>
+  <%= for {id, name} <- @sessions do %>
+      <li><%= name %></li>
+  <% end %>
+</ul>

@@ -17,7 +17,8 @@ defmodule LeanCoffeeWeb.Router do
   scope "/", LeanCoffeeWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    # get "/", PageController, :home
+    live "/", SessionLive.Index, :index
   end
 
   # Other scopes may use custom stacks.

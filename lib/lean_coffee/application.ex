@@ -16,6 +16,7 @@ defmodule LeanCoffee.Application do
       # Start a worker by calling: LeanCoffee.Worker.start_link(arg)
       # {LeanCoffee.Worker, arg},
       # Start to serve requests, typically the last entry
+      {LeanCoffee.Storage, []},
       LeanCoffeeWeb.Endpoint
     ]
 
