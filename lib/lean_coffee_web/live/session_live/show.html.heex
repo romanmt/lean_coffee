@@ -1,0 +1,14 @@
+<h1>Session: <%= @name %></h1>
+
+<h2>Participants</h2>
+<ul>
+  <%= for participant <- @participants do %>
+    <li><%= participant %></li>
+  <% end %>
+</ul>
+
+<form phx-submit="join">
+  <input type="text" name="user" placeholder="Your Name" value= {@new_user} phx-change="update_new_user"/>
+  <button type="submit">Join Session</button>
+</form>
+

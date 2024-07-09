@@ -19,6 +19,7 @@ defmodule LeanCoffeeWeb.Router do
 
     # get "/", PageController, :home
     live "/", SessionLive.Index, :index
+    live "/sessions/:id", SessionLive.Show, :show
   end
 
   # Other scopes may use custom stacks.

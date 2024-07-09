@@ -14,6 +14,8 @@ defmodule LeanCoffeeWeb.SessionLive.Index do
   end
 
   defp list_sessions do
-    Storage.get_all_sessions()
+    sessions = Storage.get_all_sessions()
+    IO.puts(inspect(sessions))
+    sessions
   end
 end
