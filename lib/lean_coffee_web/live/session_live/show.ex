@@ -31,7 +31,13 @@ defmodule LeanCoffeeWeb.SessionLive.Show do
     if user_name == "" do
       {:noreply, socket |> put_flash(:error, "Name cannot be empty")}
     else
-      {:noreply, assign(socket, user_name: user_name)}
+      case Storage.join_session(socket.assigns.session_id, user_name) do
+        {:ok, {session_id, _name, participants, topics, current_topic, _timer_ref}} ->
+          {:noreply, assign(socket, participants: participants, user_name: user_name)}
+
+        {:error, :session_not_found} ->
+          {:noreply, socket |> put_flash(:error, "Session not found") |> redirect(to: "/")}
+      end
     end
   end
 
