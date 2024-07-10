@@ -6,24 +6,41 @@
     <li><%= participant %></li>
   <% end %>
 </ul>
+<br>
+<%= if @user_name == nil do %>
+  <form phx-submit="submit_user_name">
+    <div>
+      <label for="user_name">Your Name:</label>
+      <input type="text" name="user_name" id="user_name" required>
+    </div>
+    <button type="submit">Submit</button>
+  </form>
+<% else %>
+<p>Welcome, <%= @user_name %>!</p>
+  <form phx-submit="propose_topic">
+    <div>
+      <label for="new_topic">Propose a Topic:</label>
+      <input type="text" name="new_topic" id="new_topic" value={@new_topic} phx-change="update_new_topic"/>
+    </div>
+    <button type="submit">Propose Topic</button>
+  </form>
+<% end %>
 
-<form phx-submit="join">
-  <input type="text" name="user" placeholder="Your Name" value= {@new_user} phx-change="update_new_user"/>
-  <button type="submit">Join Session</button>
-</form>
-
-<h2>Propose a Topic</h2>
-<form phx-submit="propose_topic">
-  <input type="text" name="topic" placeholder="New Topic" value={@new_topic} phx-change="update_new_topic"/>
-  <button type="submit">Propose Topic</button>
-</form>
-
+<br>
 <h2>Topics</h2>
 <ul>
-  <%= for {topic, votes} <- @topics do %>
+  <%= for {topic, votes, user} <- @topics do %>
     <li>
-      <%= topic %> - Votes: <%= votes %>
-        <button phx-click="vote" phx-value-topic={topic}>Vote</button>
+      <%= topic %> - Votes: <%= votes %> (Proposed by: <%= user %>)
+      <button phx-click="vote" phx-value-topic={topic}>Vote</button>
     </li>
+    <%= if @current_topic == nil do %>
+      <button phx-click="start_discussion" phx-value-topic={topic}>Start Discussion</button>
+    <% end %>
   <% end %>
 </ul>
+<br>
+<%= if @current_topic do %>
+  <h2>Current Discussion: <%= @current_topic %></h2>
+  <button phx-click="end_discussion">End Discussion</button>
+<% end %>
