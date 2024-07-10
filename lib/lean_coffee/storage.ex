@@ -97,7 +97,9 @@ defmodule LeanCoffee.Storage do
     case :ets.lookup(@table_name, session_id) do
       [{^session_id, name, participants, topics, _current_topic, _timer_ref}] ->
         # 5 minutes
-        new_timer_ref = Process.send_after(self(), {:end_discussion, session_id}, 5 * 60 * 1000)
+        new_timer_ref =
+          Process.send_after(self(), {:end_discussion, topic, session_id}, 5 * 60 * 1000)
+
         :ets.insert(@table_name, {session_id, name, participants, topics, topic, new_timer_ref})
 
         Phoenix.PubSub.broadcast(
