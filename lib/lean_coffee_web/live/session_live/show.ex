@@ -115,7 +115,7 @@ defmodule LeanCoffeeWeb.SessionLive.Show do
     {:noreply, assign(socket, current_topic: topic)}
   end
 
-  def handle_info({:end_discussion, _session_id, _topic}, socket) do
+  def handle_info({:end_discussion, _session_id}, socket) do
     {:noreply, assign(socket, current_topic: nil)}
   end
 end

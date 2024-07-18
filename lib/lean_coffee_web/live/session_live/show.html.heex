@@ -1,46 +1,76 @@
-<h1 class="text-2xl">Session: <%= @name %></h1>
-
-<h2>Participants</h2>
-<ul>
-  <%= for participant <- @participants do %>
-    <li><%= participant %></li>
-  <% end %>
-</ul>
-<br>
-<%= if @user_name == nil do %>
-  <form phx-submit="submit_user_name">
-    <div>
-      <label for="user_name">Your Name:</label>
-      <input type="text" name="user_name" id="user_name" required>
-    </div>
-    <button type="submit">Submit</button>
-  </form>
-<% else %>
-<p>Welcome, <%= @user_name %>!</p>
-  <form phx-submit="propose_topic">
-    <div>
-      <label for="new_topic">Propose a Topic:</label>
-      <input type="text" name="new_topic" id="new_topic" value={@new_topic} phx-change="update_new_topic"/>
-    </div>
-    <button type="submit">Propose Topic</button>
-  </form>
-<% end %>
-
-<br>
-<h2>Topics</h2>
-<ul>
-  <%= for {topic, votes, user} <- @topics do %>
-    <li>
-      <%= topic %> - Votes: <%= votes %> (Proposed by: <%= user %>)
-      <button phx-click="vote" phx-value-topic={topic}>Vote</button>
-    </li>
-    <%= if @current_topic == nil do %>
-      <button phx-click="start_discussion" phx-value-topic={topic}>Start Discussion</button>
+<!-- Header -->
+<header class="bg-blue-600 text-white py-4">
+  <div class="container mx-auto px-4">
+    <h1 class="text-2xl font-bold">
+      Session: <%= @name %>
+    </h1>
+  </div>
+</header>
+<!-- Main Content Area -->
+<div class="flex h-screen">
+  <!-- Left Navigation -->
+  <nav class="bg-gray-800 text-white w-64 space-y-2 py-4 px-2">
+    <%= if @user_name == nil do %>
+      <form phx-submit="submit_user_name">
+        <div>
+          <input
+            class="input"
+            type="text"
+            name="user_name"
+            id="user_name"
+            placeholder="Your Name"
+            required
+          />
+          <button class="btn" type="submit">Join</button>
+        </div>
+      </form>
     <% end %>
-  <% end %>
-</ul>
-<br>
-<%= if @current_topic do %>
-  <h2>Current Discussion: <%= @current_topic %></h2>
-  <button phx-click="end_discussion">End Discussion</button>
-<% end %>
+    <h2 class="text-2xl">Participants</h2>
+    <ul>
+      <%= for participant <- @participants do %>
+        <li><%= participant %></li>
+      <% end %>
+    </ul>
+    <div class="border-t border-gray-700 my-2" />
+
+    <h2 class="text-2xl">Topics</h2>
+    <%= if @user_name != nil do %>
+      <form phx-submit="propose_topic">
+        <div>
+          <input
+            class="input"
+            type="text"
+            name="new_topic"
+            id="new_topic"
+            value={@new_topic}
+            placeholder="New Topic"
+            phx-change="update_new_topic"
+          />
+          <button class="btn" type="submit">Propose</button>
+        </div>
+      </form>
+    <% end %>
+    <%= for {topic, votes, user} <- @topics do %>
+      <div class="topic-card">
+        <p><%= topic %></p>
+        (Proposed by: <%= user %>)
+        Votes: <%= votes %>
+        <button class="btn-sm" phx-click="vote" phx-value-topic={topic}>Vote</button>
+        <%= if @current_topic == nil do %>
+          <button class="btn-sm" phx-click="start_discussion" phx-value-topic={topic}>
+            Discuss
+          </button>
+        <% end %>
+      </div>
+    <% end %>
+  </nav>
+  <!-- Main Page Content -->
+  <main class="flex-1 bg-gray-100 p-6">
+    <h2 class="text-xl font-bold mb-4">Main Content</h2>
+    <%= if @current_topic do %>
+  <h2 class="text-xl">Current Discussion: <%= @current_topic %></h2>
+  <button class="btn" phx-click="end_discussion">End Discussion</button>
+    <% end %>
+  </main>
+</div>
+

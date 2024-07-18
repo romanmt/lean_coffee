@@ -3,3 +3,19 @@
 @import "tailwindcss/utilities";
 
 /* This file is for your main application CSS */
+
+.btn {
+    @apply bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 my-2 rounded
+}
+
+.btn-sm {
+    @apply bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded
+}
+
+.input {
+    @apply border border-gray-300 p-2 rounded
+}
+
+.topic-card {
+    @apply bg-gray-700  rounded m-1 p-2
+}

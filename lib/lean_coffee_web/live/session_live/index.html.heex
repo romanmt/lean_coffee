@@ -2,13 +2,15 @@
 
 <form phx-submit="create_session">
   <input type="text" name="name" placeholder="Session Name" required>
-  <button type="submit">Create Session</button>
+  <button class="btn" type="submit">Create Session</button>
 </form>
-
+<br>
 <ul>
-  <%= for {id, name, _participants, _topics} <- @sessions do %>
+  <%= for {id, name, _participants, _topics, _, _} <- @sessions do %>
     <li>
-      <%= name %>, <%= id %>
+      <.link href={~p"/sessions/#{id}"}>
+        <%= name %>
+      </.link>
     </li>
   <% end %>
 </ul>

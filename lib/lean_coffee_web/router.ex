@@ -1,5 +1,6 @@
 defmodule LeanCoffeeWeb.Router do
   use LeanCoffeeWeb, :router
+  import Phoenix.LiveView.Router
 
   pipeline :browser do
     plug :accepts, ["html"]

@@ -1,6 +1,8 @@
 defmodule LeanCoffee.Storage do
   use GenServer
 
+  import Logger
+
   @table_name :sessions
 
   # Client API
@@ -10,12 +12,11 @@ defmodule LeanCoffee.Storage do
   end
 
   def create_session(id, name) do
-    :ets.insert(@table_name, {id, name, [], [], nil, nil})
-    Phoenix.PubSub.broadcast(LeanCoffee.PubSub, "session:#{id}", {:new_session, id, name})
+    GenServer.cast(__MODULE__, {:create_session, id, name})
   end
 
   def get_all_sessions do
-    :ets.tab2list(@table_name)
+    GenServer.call(__MODULE__, :get_all_sessions)
   end
 
   def join_session(session_id, user) do
@@ -97,8 +98,12 @@ defmodule LeanCoffee.Storage do
     case :ets.lookup(@table_name, session_id) do
       [{^session_id, name, participants, topics, _current_topic, _timer_ref}] ->
         # 5 minutes
+        Logger.info("Scheduling discussion for 5 minutes")
+
         new_timer_ref =
-          Process.send_after(self(), {:end_discussion, topic, session_id}, 5 * 60 * 1000)
+          Process.send_after(self(), {:end_discussion, session_id}, 1 * 20 * 1000)
+
+        Logger.info("Timer reference: #{inspect(new_timer_ref)}")
 
         :ets.insert(@table_name, {session_id, name, participants, topics, topic, new_timer_ref})
 
@@ -119,6 +124,8 @@ defmodule LeanCoffee.Storage do
     case :ets.lookup(@table_name, session_id) do
       [{^session_id, name, participants, topics, current_topic, _timer_ref}] ->
         :ets.insert(@table_name, {session_id, name, participants, topics, nil, nil})
+
+        Logger.info("Ending Discussion")
 
         Phoenix.PubSub.broadcast(
           LeanCoffee.PubSub,
@@ -152,7 +159,22 @@ defmodule LeanCoffee.Storage do
   end
 
   @impl true
+  def handle_cast({:create_session, id, name}, state) do
+    Logger.info("*** handling event :create_session")
+    :ets.insert(@table_name, {id, name, [], [], nil, nil})
+    Phoenix.PubSub.broadcast(LeanCoffee.PubSub, "session:main", {:new_session, id, name})
+    {:noreply, state}
+  end
+
+  @impl true
+  def handle_call(:get_all_sessions, _from, state) do
+    sessions = :ets.tab2list(@table_name)
+    {:reply, sessions, state}
+  end
+
+  @impl true
   def handle_info({:end_discussion, session_id}, state) do
+    Logger.info("*** Handling event :end_discussion")
     end_discussion(session_id)
     {:noreply, state}
   end
